@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FRONT Financial — March 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --gold: #F5C842;
+    --teal: #4ECDC4;
+    --bg: #080A0D;
+    --card: #0F1117;
+    --border: rgba(255,255,255,0.05);
+    --white: #F8F8F6;
+    --muted: #52566A;
+    --green: #2ECC71;
+  }
+
+  html, body {
+    width: 100%; height: 100%;
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    overflow: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none; z-index: 0;
+  }
+
+  /* ── LAYOUT ── */
+  .layout {
+    position: relative; z-index: 1;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    height: 100vh;
+    padding: 2.2vw 3vw;
+    gap: 1.8vw;
+    transition: padding-right 0.4s cubic-bezier(0.4,0,0.2,1);
+  }
+  .layout.panel-open { padding-right: 380px; }
+
+  /* ── HEADER ── */
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-bottom: 1.6vw;
+    border-bottom: 1px solid rgba(245,200,66,0.12);
+  }
+
+  .logo-wordmark {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(1.6rem, 3.2vw, 3.2rem);
+    letter-spacing: 0.14em; color: var(--gold); line-height: 1;
+  }
+  .logo-sub {
+    font-size: clamp(0.6rem, 0.85vw, 0.72rem);
+    color: var(--muted); letter-spacing: 0.2em;
+    text-transform: uppercase; margin-top: 3px; font-weight: 500;
+  }
+
+  .header-right { display: flex; align-items: center; gap: 1.5vw; }
+
+  .live-pill {
+    display: flex; align-items: center; gap: 8px;
+    background: rgba(78,205,196,0.08);
+    border: 1px solid rgba(78,205,196,0.2);
+    border-radius: 100px; padding: 6px 14px 6px 10px;
+    font-size: clamp(0.6rem, 0.8vw, 0.7rem);
+    color: var(--teal); letter-spacing: 0.12em;
+    text-transform: uppercase; font-weight: 600;
+  }
+  .pulse {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--teal);
+    box-shadow: 0 0 0 0 rgba(78,205,196,0.6);
+    animation: ripple 1.8s ease-in-out infinite;
+  }
+  @keyframes ripple {
+    0% { box-shadow: 0 0 0 0 rgba(78,205,196,0.6); }
+    70% { box-shadow: 0 0 0 6px rgba(78,205,196,0); }
+    100% { box-shadow: 0 0 0 0 rgba(78,205,196,0); }
+  }
+
+  .log-btn {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--gold); color: #000;
+    border: none; border-radius: 100px;
+    padding: 8px 20px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: clamp(0.65rem, 0.9vw, 0.8rem);
+    font-weight: 700; letter-spacing: 0.08em;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .log-btn:hover { background: #ffe27a; transform: translateY(-1px); }
+  .log-btn svg { width: 14px; height: 14px; }
+
+  .last-updated {
+    font-size: clamp(0.55rem, 0.75vw, 0.65rem);
+    color: var(--muted); text-align: right; margin-top: 4px;
+  }
+
+  /* ── CARDS ── */
+  .cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2vw;
+  }
+
+  .card {
+    background: var(--card); border-radius: 24px;
+    padding: clamp(1.6rem, 2.6vw, 2.8rem);
+    border: 1px solid var(--border);
+    position: relative; overflow: hidden;
+    display: flex; flex-direction: column; gap: 1.3vw;
+    opacity: 0; transform: translateY(18px);
+    animation: rise 0.7s cubic-bezier(0.22,1,0.36,1) forwards;
+  }
+  .card:nth-child(1) { animation-delay: 0.08s; }
+  .card:nth-child(2) { animation-delay: 0.2s; }
+  @keyframes rise { to { opacity: 1; transform: translateY(0); } }
+
+  .card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    border-radius: 24px 24px 0 0;
+  }
+  .card.gold::before { background: linear-gradient(90deg, transparent, var(--gold) 30%, #ffe87a 50%, var(--gold) 70%, transparent); }
+  .card.teal::before { background: linear-gradient(90deg, transparent, var(--teal) 30%, #a8f0ec 50%, var(--teal) 70%, transparent); }
+
+  .wm {
+    position: absolute; bottom: -2vw; right: 1vw;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(5rem, 14vw, 14rem);
+    color: rgba(255,255,255,0.022);
+    line-height: 1; pointer-events: none; user-select: none;
+  }
+
+  .card-top { display: flex; justify-content: space-between; align-items: flex-start; }
+  .badge {
+    font-size: clamp(0.55rem, 0.82vw, 0.7rem);
+    font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+    padding: 4px 12px; border-radius: 100px;
+  }
+  .card.gold .badge { background: rgba(245,200,66,0.1); color: var(--gold); border: 1px solid rgba(245,200,66,0.22); }
+  .card.teal .badge { background: rgba(78,205,196,0.1); color: var(--teal); border: 1px solid rgba(78,205,196,0.22); }
+
+  .card-prize { font-size: clamp(0.58rem, 0.8vw, 0.68rem); color: var(--muted); text-align: right; }
+  .card.gold .card-prize strong { color: var(--gold); }
+  .card.teal .card-prize strong { color: var(--teal); }
+
+  .card-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(1.6rem, 3vw, 3rem);
+    letter-spacing: 0.06em; line-height: 1;
+  }
+
+  .amount-row { display: flex; align-items: baseline; gap: 0.8vw; }
+  .amount-big {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 7.5vw, 7.5rem); line-height: 0.9;
+    transition: color 0.4s;
+  }
+  .card.gold .amount-big { color: var(--gold); }
+  .card.teal .amount-big { color: var(--teal); }
+  .amount-of { font-family: 'Bebas Neue', sans-serif; font-size: clamp(1.1rem, 2.2vw, 2.2rem); color: var(--muted); }
+
+  /* Progress */
+  .prog-wrap { display: flex; flex-direction: column; gap: 0.6vw; }
+  .prog-header { display: flex; justify-content: space-between; align-items: center; }
+  .prog-label { font-size: clamp(0.6rem, 0.85vw, 0.72rem); color: var(--muted); font-weight: 500; }
+  .prog-pct { font-family: 'Bebas Neue', sans-serif; font-size: clamp(1.1rem, 2vw, 2rem); }
+  .card.gold .prog-pct { color: var(--gold); }
+  .card.teal .prog-pct { color: var(--teal); }
+
+  .track { height: clamp(14px, 1.8vw, 24px); background: rgba(255,255,255,0.05); border-radius: 100px; overflow: hidden; }
+  .fill {
+    height: 100%; border-radius: 100px;
+    transition: width 1s cubic-bezier(0.4,0,0.2,1);
+    position: relative; min-width: 0; max-width: 100%;
+  }
+  .card.gold .fill { background: linear-gradient(90deg,#b8900f,var(--gold),#ffe57c); box-shadow: 0 0 20px rgba(245,200,66,0.35); }
+  .card.teal .fill { background: linear-gradient(90deg,#279e97,var(--teal),#a4f0ec); box-shadow: 0 0 20px rgba(78,205,196,0.35); }
+  .fill::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(90deg,transparent,rgba(255,255,255,0.28),transparent);
+    background-size: 200% 100%;
+    animation: shine 2.5s ease-in-out infinite;
+  }
+  @keyframes shine { 0%{background-position:-100% 0} 100%{background-position:300% 0} }
+
+  .prog-remaining { font-size: clamp(0.6rem, 0.85vw, 0.72rem); color: var(--muted); }
+  .prog-remaining strong { color: var(--white); font-weight: 600; }
+
+  .achieved {
+    display: none; align-items: center; gap: 1vw;
+    background: rgba(46,204,113,0.08); border: 1px solid rgba(46,204,113,0.25);
+    border-radius: 14px; padding: 0.6vw 1.2vw;
+  }
+  .achieved.show { display: flex; }
+  .achieved-icon { font-size: clamp(1.2rem, 2vw, 2rem); }
+  .achieved-text { font-family: 'Bebas Neue', sans-serif; font-size: clamp(1rem, 1.8vw, 1.8rem); color: var(--green); letter-spacing: 0.1em; }
+
+  /* ── FOOTER ── */
+  footer {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-top: 1.4vw; border-top: 1px solid var(--border);
+  }
+  .stat { display: flex; flex-direction: column; align-items: center; gap: 0.3vw; flex: 1; }
+  .stat-val { font-family: 'Bebas Neue', sans-serif; font-size: clamp(1.2rem, 2.6vw, 2.6rem); color: var(--white); line-height: 1; }
+  .stat-label { font-size: clamp(0.52rem, 0.72vw, 0.62rem); color: var(--muted); text-transform: uppercase; letter-spacing: 0.15em; font-weight: 600; text-align: center; }
+  .divider { width: 1px; height: clamp(2rem, 3.5vw, 3.5rem); background: var(--border); flex-shrink: 0; }
+  .motto { font-family: 'Bebas Neue', sans-serif; font-size: clamp(1.6rem, 3.2vw, 3.2rem); letter-spacing: 0.18em; color: rgba(255,255,255,0.06); user-select: none; flex-shrink: 0; }
+
+  /* ── SLIDE-OUT PANEL ── */
+  .panel {
+    position: fixed; top: 0; right: 0; bottom: 0;
+    width: 360px;
+    background: #0D0F15;
+    border-left: 1px solid rgba(245,200,66,0.15);
+    z-index: 50;
+    transform: translateX(100%);
+    transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .panel.open { transform: translateX(0); }
+
+  .panel-header {
+    padding: 24px 24px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    display: flex; justify-content: space-between; align-items: center;
+    flex-shrink: 0;
+  }
+  .panel-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem; letter-spacing: 0.1em; color: var(--gold);
+  }
+  .panel-close {
+    background: rgba(255,255,255,0.06); border: none;
+    color: var(--muted); border-radius: 8px;
+    width: 32px; height: 32px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; transition: all 0.2s;
+  }
+  .panel-close:hover { background: rgba(255,255,255,0.1); color: var(--white); }
+
+  .panel-body {
+    flex: 1; overflow-y: auto; padding: 20px 24px;
+    display: flex; flex-direction: column; gap: 24px;
+  }
+  .panel-body::-webkit-scrollbar { width: 4px; }
+  .panel-body::-webkit-scrollbar-track { background: transparent; }
+  .panel-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+
+  .section-label {
+    font-size: 0.68rem; font-weight: 700; letter-spacing: 0.2em;
+    text-transform: uppercase; margin-bottom: 12px;
+  }
+  .section-label.gold { color: var(--gold); }
+  .section-label.teal { color: var(--teal); }
+
+  .deal-list { display: flex; flex-direction: column; gap: 8px; }
+
+  .deal-row {
+    display: flex; gap: 8px; align-items: center;
+  }
+  .deal-input {
+    flex: 1;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 10px 14px;
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 500;
+    transition: border-color 0.2s, background 0.2s;
+    outline: none;
+  }
+  .deal-input:focus { border-color: rgba(245,200,66,0.4); background: rgba(245,200,66,0.04); }
+  .deal-input.teal-focus:focus { border-color: rgba(78,205,196,0.4); background: rgba(78,205,196,0.04); }
+  .deal-input::placeholder { color: var(--muted); }
+
+  .deal-remove {
+    background: rgba(255,255,255,0.05); border: none;
+    color: var(--muted); border-radius: 8px;
+    width: 32px; height: 38px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s; flex-shrink: 0; font-size: 1rem;
+  }
+  .deal-remove:hover { background: rgba(231,76,60,0.15); color: #e74c3c; }
+
+  .add-deal-btn {
+    display: flex; align-items: center; gap: 8px;
+    background: transparent;
+    border: 1px dashed rgba(255,255,255,0.12);
+    border-radius: 10px; padding: 10px 14px;
+    color: var(--muted); font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem; font-weight: 500; cursor: pointer;
+    transition: all 0.2s; width: 100%;
+  }
+  .add-deal-btn:hover { border-color: rgba(245,200,66,0.3); color: var(--gold); }
+  .add-deal-btn.teal:hover { border-color: rgba(78,205,196,0.3); color: var(--teal); }
+
+  .section-divider { height: 1px; background: rgba(255,255,255,0.06); }
+
+  .total-display {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 12px 14px;
+    background: rgba(255,255,255,0.03); border-radius: 10px;
+    margin-top: 4px;
+  }
+  .total-label { font-size: 0.72rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; }
+  .total-val { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; }
+  .total-val.gold { color: var(--gold); }
+  .total-val.teal { color: var(--teal); }
+
+  .panel-footer {
+    padding: 16px 24px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    flex-shrink: 0;
+  }
+  .clear-btn {
+    width: 100%; padding: 10px;
+    background: transparent; border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px; color: var(--muted);
+    font-family: 'DM Sans', sans-serif; font-size: 0.78rem;
+    font-weight: 600; cursor: pointer; transition: all 0.2s;
+    letter-spacing: 0.06em;
+  }
+  .clear-btn:hover { border-color: rgba(231,76,60,0.3); color: #e74c3c; }
+
+  /* Notification toast */
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
+    background: var(--green); color: #000;
+    padding: 10px 22px; border-radius: 100px;
+    font-size: 0.8rem; font-weight: 700; z-index: 200;
+    transition: transform 0.3s ease; white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- DASHBOARD -->
+<div class="layout" id="layout">
+  <header>
+    <div>
+      <div class="logo-wordmark">FRONT Financial</div>
+      <div class="logo-sub">March 2026 — Revenue Dashboard</div>
+    </div>
+    <div class="header-right">
+      <button class="log-btn" onclick="togglePanel()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Log Deal
+      </button>
+      <div>
+        <div class="live-pill"><div class="pulse"></div>Live</div>
+        <div class="last-updated" id="lastUpdated">Ready</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="cards">
+    <!-- SUBMITTED -->
+    <div class="card gold">
+      <div class="wm">$</div>
+      <div class="card-top">
+        <div class="badge">🏎️ &nbsp;Goal 1 — Submitted</div>
+        <div class="card-prize">Prize<br><strong>Lamborghini Urus</strong></div>
+      </div>
+      <div class="card-title">Deals Lodged</div>
+      <div class="amount-row">
+        <div class="amount-big" id="sub-amount">$0</div>
+        <div class="amount-of">/ $500,000</div>
+      </div>
+      <div class="prog-wrap">
+        <div class="prog-header">
+          <span class="prog-label" id="sub-label">0% of target</span>
+          <span class="prog-pct" id="sub-pct">0%</span>
+        </div>
+        <div class="track"><div class="fill" id="sub-bar" style="width:0%"></div></div>
+        <div class="prog-remaining" id="sub-rem"><strong>$500,000</strong> to go</div>
+      </div>
+      <div class="achieved" id="sub-achieved">
+        <div class="achieved-icon">🏆</div>
+        <div class="achieved-text">Target Smashed!</div>
+      </div>
+    </div>
+
+    <!-- UA -->
+    <div class="card teal">
+      <div class="wm">UA</div>
+      <div class="card-top">
+        <div class="badge">✅ &nbsp;Goal 2 — Approved</div>
+        <div class="card-prize">Target<br><strong>$333,333</strong></div>
+      </div>
+      <div class="card-title">UA Revenue</div>
+      <div class="amount-row">
+        <div class="amount-big" id="ua-amount">$0</div>
+        <div class="amount-of">/ $333,333</div>
+      </div>
+      <div class="prog-wrap">
+        <div class="prog-header">
+          <span class="prog-label" id="ua-label">0% of target</span>
+          <span class="prog-pct" id="ua-pct">0%</span>
+        </div>
+        <div class="track"><div class="fill" id="ua-bar" style="width:0%"></div></div>
+        <div class="prog-remaining" id="ua-rem"><strong>$333,333</strong> to go</div>
+      </div>
+      <div class="achieved" id="ua-achieved">
+        <div class="achieved-icon">🏆</div>
+        <div class="achieved-text">Target Smashed!</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="stat">
+      <div class="stat-val" id="f-sub-count">0</div>
+      <div class="stat-label">Deals Submitted</div>
+    </div>
+    <div class="divider"></div>
+    <div class="stat">
+      <div class="stat-val" id="f-ua-count">0</div>
+      <div class="stat-label">Deals UA'd</div>
+    </div>
+    <div class="divider"></div>
+    <div class="motto">LET'S GET IT</div>
+    <div class="divider"></div>
+    <div class="stat">
+      <div class="stat-val" id="f-sub-avg">$0</div>
+      <div class="stat-label">Avg Submitted Deal</div>
+    </div>
+    <div class="divider"></div>
+    <div class="stat">
+      <div class="stat-val" id="f-ua-avg">$0</div>
+      <div class="stat-label">Avg UA Deal</div>
+    </div>
+  </footer>
+</div>
+
+<!-- SLIDE-OUT LOG PANEL -->
+<div class="panel" id="panel">
+  <div class="panel-header">
+    <div class="panel-title">Log Deals</div>
+    <button class="panel-close" onclick="togglePanel()">✕</button>
+  </div>
+
+  <div class="panel-body">
+    <!-- SUBMITTED -->
+    <div>
+      <div class="section-label gold">🏎️ Submitted Revenue</div>
+      <div class="deal-list" id="sub-list"></div>
+      <button class="add-deal-btn" onclick="addDeal('sub')" style="margin-top:8px">
+        + Add Submitted Deal
+      </button>
+      <div class="total-display" style="margin-top:10px">
+        <span class="total-label">Total Submitted</span>
+        <span class="total-val gold" id="sub-total-disp">$0</span>
+      </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- UA -->
+    <div>
+      <div class="section-label teal">✅ UA Revenue</div>
+      <div class="deal-list" id="ua-list"></div>
+      <button class="add-deal-btn teal" onclick="addDeal('ua')" style="margin-top:8px">
+        + Add UA Deal
+      </button>
+      <div class="total-display" style="margin-top:10px">
+        <span class="total-label">Total UA</span>
+        <span class="total-val teal" id="ua-total-disp">$0</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel-footer">
+    <button class="clear-btn" onclick="clearAll()">Clear All Deals</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const SUB_TARGET = 500000;
+  const UA_TARGET  = 333333;
+
+  let subDeals = [];
+  let uaDeals  = [];
+
+  // Load from localStorage
+  function load() {
+    try {
+      subDeals = JSON.parse(localStorage.getItem('front_sub') || '[]');
+      uaDeals  = JSON.parse(localStorage.getItem('front_ua')  || '[]');
+    } catch(e) {
+      subDeals = []; uaDeals = [];
+    }
+    renderPanel();
+    updateDashboard();
+  }
+
+  function save() {
+    localStorage.setItem('front_sub', JSON.stringify(subDeals));
+    localStorage.setItem('front_ua',  JSON.stringify(uaDeals));
+  }
+
+  // Panel toggle
+  function togglePanel() {
+    const panel  = document.getElementById('panel');
+    const layout = document.getElementById('layout');
+    const open   = panel.classList.toggle('open');
+    layout.classList.toggle('panel-open', open);
+  }
+
+  // Add deal row
+  function addDeal(type) {
+    const arr = type === 'sub' ? subDeals : uaDeals;
+    arr.push({ id: Date.now(), label: '', amount: '' });
+    save();
+    renderPanel();
+  }
+
+  function removeDeal(type, id) {
+    if (type === 'sub') subDeals = subDeals.filter(d => d.id !== id);
+    else                uaDeals  = uaDeals.filter(d => d.id !== id);
+    save();
+    renderPanel();
+    updateDashboard();
+  }
+
+  function updateDeal(type, id, field, val) {
+    const arr = type === 'sub' ? subDeals : uaDeals;
+    const deal = arr.find(d => d.id === id);
+    if (deal) deal[field] = val;
+    save();
+    updateDashboard();
+    // Update totals in panel
+    updatePanelTotals();
+  }
+
+  function renderPanel() {
+    renderList('sub', subDeals);
+    renderList('ua',  uaDeals);
+    updatePanelTotals();
+  }
+
+  function renderList(type, deals) {
+    const list = document.getElementById(`${type}-list`);
+    list.innerHTML = '';
+    deals.forEach(deal => {
+      const row = document.createElement('div');
+      row.className = 'deal-row';
+      const isTeal = type === 'ua';
+      row.innerHTML = `
+        <input class="deal-input ${isTeal ? 'teal-focus' : ''}"
+               type="text" placeholder="Deal name (optional)"
+               value="${deal.label}"
+               onchange="updateDeal('${type}', ${deal.id}, 'label', this.value)"
+               style="max-width: 130px">
+        <input class="deal-input ${isTeal ? 'teal-focus' : ''}"
+               type="number" placeholder="$0"
+               value="${deal.amount}"
+               oninput="updateDeal('${type}', ${deal.id}, 'amount', this.value)"
+               style="min-width:0">
+        <button class="deal-remove" onclick="removeDeal('${type}', ${deal.id})">✕</button>
+      `;
+      list.appendChild(row);
+    });
+  }
+
+  function updatePanelTotals() {
+    const subT = subDeals.reduce((s, d) => s + (parseFloat(d.amount) || 0), 0);
+    const uaT  = uaDeals.reduce((s, d) => s + (parseFloat(d.amount) || 0), 0);
+    document.getElementById('sub-total-disp').textContent = fmt(subT);
+    document.getElementById('ua-total-disp').textContent  = fmt(uaT);
+  }
+
+  function fmt(n) { return '$' + Math.round(n).toLocaleString('en-AU'); }
+  function fmtShort(n) {
+    if (n >= 1e6) return '$' + (n/1e6).toFixed(2) + 'M';
+    if (n >= 1e3) return '$' + Math.round(n/1e3) + 'K';
+    return '$' + Math.round(n);
+  }
+
+  function updateDashboard() {
+    const subT = subDeals.reduce((s, d) => s + (parseFloat(d.amount) || 0), 0);
+    const uaT  = uaDeals.reduce((s, d) => s + (parseFloat(d.amount) || 0), 0);
+
+    const subPct = Math.min(100, (subT / SUB_TARGET) * 100);
+    const uaPct  = Math.min(100, (uaT  / UA_TARGET)  * 100);
+
+    // Submitted
+    document.getElementById('sub-amount').textContent = fmt(subT);
+    document.getElementById('sub-bar').style.width = subPct + '%';
+    document.getElementById('sub-pct').textContent = Math.round(subPct) + '%';
+    document.getElementById('sub-label').textContent = Math.round(subPct) + '% of target';
+    const subRem = Math.max(0, SUB_TARGET - subT);
+    document.getElementById('sub-rem').innerHTML = subRem > 0
+      ? `<strong>${fmt(subRem)}</strong> to go`
+      : `<strong>Exceeded by ${fmt(subT - SUB_TARGET)}</strong> 🔥`;
+    document.getElementById('sub-achieved').classList.toggle('show', subT >= SUB_TARGET);
+
+    // UA
+    document.getElementById('ua-amount').textContent = fmt(uaT);
+    document.getElementById('ua-bar').style.width = uaPct + '%';
+    document.getElementById('ua-pct').textContent = Math.round(uaPct) + '%';
+    document.getElementById('ua-label').textContent = Math.round(uaPct) + '% of target';
+    const uaRem = Math.max(0, UA_TARGET - uaT);
+    document.getElementById('ua-rem').innerHTML = uaRem > 0
+      ? `<strong>${fmt(uaRem)}</strong> to go`
+      : `<strong>Exceeded by ${fmt(uaT - UA_TARGET)}</strong> 🔥`;
+    document.getElementById('ua-achieved').classList.toggle('show', uaT >= UA_TARGET);
+
+    // Footer
+    document.getElementById('f-sub-count').textContent = subDeals.length;
+    document.getElementById('f-ua-count').textContent  = uaDeals.length;
+    document.getElementById('f-sub-avg').textContent   = subDeals.length ? fmtShort(subT / subDeals.length) : '$0';
+    document.getElementById('f-ua-avg').textContent    = uaDeals.length  ? fmtShort(uaT  / uaDeals.length)  : '$0';
+
+    document.getElementById('lastUpdated').textContent = 'Updated ' + new Date().toLocaleTimeString('en-AU', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  }
+
+  function clearAll() {
+    if (!confirm('Clear all deals? This cannot be undone.')) return;
+    subDeals = []; uaDeals = [];
+    save(); renderPanel(); updateDashboard();
+    showToast('All deals cleared');
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  load();
+</script>
+</body>
+</html>
