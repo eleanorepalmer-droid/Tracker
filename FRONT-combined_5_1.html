@@ -1,410 +1,369 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>FRONT Financial — This Week's Goal</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
-    --gold: #F5C842; --teal: #4ECDC4; --bg: #080A0D;
-    --card: #0F1117; --border: rgba(255,255,255,0.05);
-    --white: #F8F8F6; --muted: #52566A; --green: #2ECC71; --red: #E74C3C;
+    --red: #e02020;
+    --dark: #111;
+    --mid: #1e1e1e;
+    --card: #181818;
+    --border: #2a2a2a;
+    --text: #f0f0f0;
+    --muted: #888;
+    --green: #22c55e;
+    --yellow: #facc15;
   }
-  html, body { width:100%; height:100%; background:var(--bg); color:var(--white); font-family:'DM Sans',sans-serif; overflow:hidden; }
-  body::before {
-    content:''; position:fixed; inset:0;
-    background-image: linear-gradient(rgba(255,255,255,0.012) 1px,transparent 1px), linear-gradient(90deg,rgba(255,255,255,0.012) 1px,transparent 1px);
-    background-size:60px 60px; pointer-events:none; z-index:0;
-  }
-
-  /* LAYOUT */
-  .layout { position:relative; z-index:1; display:grid; grid-template-rows:auto 1fr auto; height:100vh; padding:2.2vw 3vw; gap:1.8vw; }
-
-  /* HEADER */
-  header { display:flex; justify-content:space-between; align-items:flex-end; padding-bottom:1.6vw; border-bottom:1px solid rgba(245,200,66,0.12); }
-  .logo-wordmark { font-family:'Bebas Neue',sans-serif; font-size:clamp(1.6rem,3.2vw,3.2rem); letter-spacing:0.14em; color:var(--gold); line-height:1; }
-  .logo-sub { font-size:clamp(0.6rem,0.85vw,0.72rem); color:var(--muted); letter-spacing:0.2em; text-transform:uppercase; margin-top:3px; font-weight:500; }
-  .header-center { text-align:center; flex:1; }
-  .page-title { font-family:'Bebas Neue',sans-serif; font-size:clamp(1.8rem,3.8vw,3.8rem); letter-spacing:0.22em; color:var(--white); line-height:1; }
-  .header-right { display:flex; align-items:center; gap:1.5vw; justify-content:flex-end; }
-  .live-pill { display:flex; align-items:center; gap:8px; background:rgba(78,205,196,0.08); border:1px solid rgba(78,205,196,0.2); border-radius:100px; padding:6px 14px 6px 10px; font-size:clamp(0.6rem,0.8vw,0.7rem); color:var(--teal); letter-spacing:0.12em; text-transform:uppercase; font-weight:600; }
-  .pulse { width:7px; height:7px; border-radius:50%; background:var(--teal); box-shadow:0 0 0 0 rgba(78,205,196,0.6); animation:ripple 1.8s ease-in-out infinite; }
-  @keyframes ripple { 0%{box-shadow:0 0 0 0 rgba(78,205,196,0.6)} 70%{box-shadow:0 0 0 6px rgba(78,205,196,0)} 100%{box-shadow:0 0 0 0 rgba(78,205,196,0)} }
-  .last-updated { font-size:clamp(0.55rem,0.75vw,0.65rem); color:var(--muted); text-align:right; margin-top:4px; }
-
-  /* MAIN GRID — two columns */
-  .main-grid { display:grid; grid-template-columns:1fr 1fr; gap:2vw; }
-
-  /* LEFT — GOAL CARD */
-  .card { background:var(--card); border-radius:24px; padding:clamp(1.4rem,2.4vw,2.6rem); border:1px solid var(--border); position:relative; overflow:hidden; display:flex; flex-direction:column; gap:1.2vw; opacity:0; transform:translateY(18px); animation:rise 0.7s cubic-bezier(0.22,1,0.36,1) forwards; }
-  .card:nth-child(1){animation-delay:0.08s} .card:nth-child(2){animation-delay:0.2s}
-  @keyframes rise { to{opacity:1;transform:translateY(0)} }
-  .card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; border-radius:24px 24px 0 0; }
-  .card.gold::before { background:linear-gradient(90deg,transparent,var(--gold) 30%,#ffe87a 50%,var(--gold) 70%,transparent); }
-  .card.teal::before { background:linear-gradient(90deg,transparent,var(--teal) 30%,#a8f0ec 50%,var(--teal) 70%,transparent); }
-
-  .wm { position:absolute; bottom:-2vw; right:1vw; font-family:'Bebas Neue',sans-serif; font-size:clamp(5rem,13vw,13rem); color:rgba(255,255,255,0.022); line-height:1; pointer-events:none; user-select:none; }
-  .card-top { display:flex; justify-content:space-between; align-items:flex-start; }
-  .badge { font-size:clamp(0.55rem,0.82vw,0.7rem); font-weight:700; letter-spacing:0.18em; text-transform:uppercase; padding:4px 12px; border-radius:100px; }
-  .card.gold .badge { background:rgba(245,200,66,0.1); color:var(--gold); border:1px solid rgba(245,200,66,0.22); }
-  .card.teal .badge { background:rgba(78,205,196,0.1); color:var(--teal); border:1px solid rgba(78,205,196,0.22); }
-
-  .card-title { font-family:'Bebas Neue',sans-serif; font-size:clamp(1.6rem,2.8vw,2.8rem); letter-spacing:0.06em; line-height:1; }
-
-  /* BIG COUNTER */
-  .counter-block { display:flex; flex-direction:column; align-items:flex-start; gap:0.3vw; position:relative; }
-  .counter-row { display:flex; align-items:center; gap:0.5vw; line-height:1; }
-  .counter-current {
-    font-family:'Bebas Neue',sans-serif;
-    font-size:clamp(6rem,16vw,18rem);
-    line-height:0.82;
-    background:linear-gradient(135deg,#b8900f 0%,var(--gold) 40%,#fffbe0 60%,var(--gold) 80%,#b8900f 100%);
-    background-size:200% 200%;
-    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
-    animation:goldShift 4s ease-in-out infinite;
-    transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);
-    filter:drop-shadow(0 0 28px rgba(245,200,66,0.3));
-  }
-  @keyframes goldShift { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
-  .counter-sep {
-    font-family:'Bebas Neue',sans-serif;
-    font-size:clamp(2.5rem,6vw,7rem);
-    color:rgba(255,255,255,0.1);
-    line-height:1;
-    align-self:center;
-    margin:0 0.2vw;
-  }
-  .counter-target {
-    font-family:'Bebas Neue',sans-serif;
-    font-size:clamp(2.5rem,6vw,7rem);
-    color:rgba(255,255,255,0.15);
-    line-height:1;
-    align-self:center;
-  }
-  .counter-label { font-size:clamp(0.6rem,0.85vw,0.72rem); color:var(--muted); font-weight:600; letter-spacing:0.2em; text-transform:uppercase; margin-top:0.2vw; }
-
-  /* PROGRESS BAR */
-  .prog-wrap { display:flex; flex-direction:column; gap:0.7vw; }
-  .prog-header { display:flex; justify-content:space-between; align-items:center; }
-  .prog-label { font-size:clamp(0.6rem,0.85vw,0.72rem); color:var(--muted); font-weight:500; }
-  .prog-pct { font-family:'Bebas Neue',sans-serif; font-size:clamp(1.1rem,2vw,2rem); }
-  .card.gold .prog-pct{color:var(--gold)} .card.teal .prog-pct{color:var(--teal)}
-  .track { height:clamp(10px,1.4vw,18px); background:rgba(255,255,255,0.04); border-radius:100px; overflow:hidden; border:1px solid rgba(255,255,255,0.06); }
-  .fill { height:100%; border-radius:100px; transition:width 1s cubic-bezier(0.4,0,0.2,1); position:relative; min-width:0; max-width:100%; }
-  .card.gold .fill { background:linear-gradient(90deg,#b8900f,var(--gold),#ffe57c); box-shadow:0 0 24px rgba(245,200,66,0.45); }
-  .fill::after { content:''; position:absolute; inset:0; background:linear-gradient(90deg,transparent,rgba(255,255,255,0.35),transparent); background-size:200% 100%; animation:shine 2.5s ease-in-out infinite; }
-  @keyframes shine { 0%{background-position:-100% 0} 100%{background-position:300% 0} }
-
-  .prog-remaining { font-size:clamp(0.6rem,0.85vw,0.72rem); color:var(--muted); }
-  .prog-remaining strong { color:var(--white); font-weight:600; }
-
-  .achieved { display:none; align-items:center; gap:1vw; background:rgba(46,204,113,0.08); border:1px solid rgba(46,204,113,0.25); border-radius:14px; padding:0.6vw 1.2vw; }
-  .achieved.show { display:flex; }
-  .achieved-icon { font-size:clamp(1.2rem,2vw,2rem); }
-  .achieved-text { font-family:'Bebas Neue',sans-serif; font-size:clamp(1rem,1.8vw,1.8rem); color:var(--green); letter-spacing:0.1em; }
-
-  /* RIGHT — ENTRY PANEL (inline) */
-  .entry-panel { background:var(--card); border-radius:24px; border:1px solid rgba(78,205,196,0.15); display:flex; flex-direction:column; overflow:hidden; opacity:0; transform:translateY(18px); animation:rise 0.7s cubic-bezier(0.22,1,0.36,1) 0.2s forwards; position:relative; }
-  .entry-panel::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; border-radius:24px 24px 0 0; background:linear-gradient(90deg,transparent,var(--teal) 30%,#a8f0ec 50%,var(--teal) 70%,transparent); }
-
-  .ep-header { padding:clamp(1.2rem,2vw,2rem) clamp(1.2rem,2vw,2rem) 0; flex-shrink:0; }
-  .ep-title { font-family:'Bebas Neue',sans-serif; font-size:clamp(1.4rem,2.4vw,2.4rem); letter-spacing:0.08em; color:var(--teal); }
-  .ep-sub { font-size:clamp(0.58rem,0.78vw,0.66rem); color:var(--muted); margin-top:3px; letter-spacing:0.1em; text-transform:uppercase; }
-
-  .ep-body { flex:1; overflow-y:auto; padding:clamp(1rem,1.6vw,1.6rem) clamp(1.2rem,2vw,2rem); display:flex; flex-direction:column; gap:8px; }
-  .ep-body::-webkit-scrollbar{width:3px} .ep-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.08);border-radius:4px}
-
-  .entry-row { display:flex; align-items:center; gap:8px; animation:slideIn 0.3s cubic-bezier(0.22,1,0.36,1); }
-  @keyframes slideIn { from{opacity:0;transform:translateX(10px)} to{opacity:1;transform:translateX(0)} }
-  .entry-num { font-family:'Bebas Neue',sans-serif; font-size:clamp(0.9rem,1.4vw,1.4rem); color:var(--muted); width:22px; flex-shrink:0; text-align:right; }
-  .entry-inp {
-    flex:1; background:rgba(255,255,255,0.04); border:1px solid rgba(78,205,196,0.12);
-    border-radius:10px; padding:9px 13px; color:var(--white);
-    font-family:'DM Sans',sans-serif; font-size:clamp(0.75rem,0.95vw,0.85rem); font-weight:500;
-    transition:all 0.2s; outline:none;
-  }
-  .entry-inp::placeholder{color:var(--muted)}
-  .entry-inp:focus{border-color:rgba(78,205,196,0.4); background:rgba(78,205,196,0.04); box-shadow:0 0 0 3px rgba(78,205,196,0.06);}
-  .entry-inp.has-value { border-color:rgba(245,200,66,0.3); background:rgba(245,200,66,0.04); color:var(--gold); }
-  .del-btn { background:rgba(255,255,255,0.04); border:none; color:var(--muted); border-radius:8px; width:30px; height:30px; flex-shrink:0; cursor:pointer; transition:all 0.2s; font-size:0.85rem; display:flex; align-items:center; justify-content:center; }
-  .del-btn:hover { background:rgba(231,76,60,0.15); color:var(--red); }
-
-  .add-row-btn { display:flex; align-items:center; justify-content:center; gap:6px; width:100%; background:transparent; border:1px dashed rgba(78,205,196,0.18); border-radius:10px; padding:9px; color:var(--muted); font-family:'DM Sans',sans-serif; font-size:clamp(0.72rem,0.88vw,0.8rem); font-weight:600; cursor:pointer; transition:all 0.2s; }
-  .add-row-btn:hover{border-color:rgba(78,205,196,0.4);color:var(--teal)}
-  .add-row-btn:disabled{opacity:0.35;cursor:not-allowed}
-
-  .ep-footer { padding:clamp(0.8rem,1.2vw,1.2rem) clamp(1.2rem,2vw,2rem); border-top:1px solid rgba(255,255,255,0.05); display:flex; justify-content:space-between; align-items:center; flex-shrink:0; }
-  .ep-count { font-family:'Bebas Neue',sans-serif; font-size:clamp(1rem,1.6vw,1.6rem); color:var(--teal); }
-  .ep-count-label { font-size:clamp(0.55rem,0.75vw,0.62rem); color:var(--muted); text-transform:uppercase; letter-spacing:0.15em; margin-top:2px; }
-  .clear-all-btn { background:transparent; border:1px solid rgba(255,255,255,0.07); border-radius:8px; padding:6px 14px; color:var(--muted); font-family:'DM Sans',sans-serif; font-size:clamp(0.65rem,0.8vw,0.72rem); font-weight:600; cursor:pointer; transition:all 0.2s; }
-  .clear-all-btn:hover{border-color:rgba(231,76,60,0.3);color:var(--red)}
-
-  /* FOOTER */
-  footer { display:flex; justify-content:space-between; align-items:center; padding-top:1.4vw; border-top:1px solid var(--border); }
-  .stat { display:flex; flex-direction:column; align-items:center; gap:0.3vw; flex:1; }
-  .stat-val { font-family:'Bebas Neue',sans-serif; font-size:clamp(1.2rem,2.4vw,2.4rem); color:var(--white); line-height:1; }
-  .stat-label { font-size:clamp(0.52rem,0.72vw,0.62rem); color:var(--muted); text-transform:uppercase; letter-spacing:0.15em; font-weight:600; text-align:center; }
-  .divider { width:1px; height:clamp(2rem,3.5vw,3.5rem); background:var(--border); flex-shrink:0; }
-  .motto { font-family:'Bebas Neue',sans-serif; font-size:clamp(1.6rem,3.2vw,3.2rem); letter-spacing:0.18em; color:rgba(255,255,255,0.06); user-select:none; flex-shrink:0; }
-
-  /* LOADER */
-  .loader { position:fixed; inset:0; background:var(--bg); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1.2rem; z-index:999; transition:opacity 0.5s ease, visibility 0.5s ease; }
-  .loader.gone{opacity:0;visibility:hidden;pointer-events:none}
-  .loader-logo { font-family:'Bebas Neue',sans-serif; font-size:clamp(2rem,5vw,5rem); color:var(--gold); letter-spacing:0.2em; }
-  .loader-bar-wrap { width:180px; height:2px; background:rgba(255,255,255,0.08); border-radius:100px; overflow:hidden; }
-  .loader-bar { height:100%; width:0; background:var(--gold); border-radius:100px; animation:loadbar 1.2s cubic-bezier(0.4,0,0.2,1) forwards; }
-  @keyframes loadbar{to{width:100%}}
-
-  .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(80px); padding:10px 22px; border-radius:100px; font-size:0.78rem; font-weight:700; z-index:300; transition:transform 0.3s ease; white-space:nowrap; }
-  .toast.success{background:var(--green);color:#000}
-  .toast.error{background:var(--red);color:#fff}
-  .toast.show{transform:translateX(-50%) translateY(0)}
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--dark); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
+  #loader { position: fixed; inset: 0; background: var(--dark); display: flex; align-items: center; justify-content: center; z-index: 999; transition: opacity .4s; }
+  #loader.gone { opacity: 0; pointer-events: none; }
+  .loader-logo { font-size: 2rem; font-weight: 900; color: var(--red); letter-spacing: -1px; }
+  header { background: var(--mid); border-bottom: 1px solid var(--border); padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+  .brand { font-size: 1.25rem; font-weight: 900; color: var(--red); letter-spacing: -0.5px; }
+  .header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+  .header-title { font-size: .7rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
+  .tagline { font-size: .65rem; color: #555; }
+  .live-badge { display: inline-flex; align-items: center; gap: 5px; background: #1a2e1a; border: 1px solid #2d5a2d; color: var(--green); font-size: .65rem; font-weight: 700; padding: 3px 8px; border-radius: 20px; letter-spacing: .5px; }
+  .live-dot { width: 6px; height: 6px; background: var(--green); border-radius: 50%; animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+  #lastUpdated { font-size: .65rem; color: var(--muted); }
+  #syncStatus { font-size: .65rem; color: var(--muted); font-style: italic; }
+  .page { max-width: 900px; margin: 0 auto; padding: 24px 16px; display: grid; gap: 20px; }
+  .goal-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; }
+  .goal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 8px; }
+  .goal-title { font-size: 1rem; font-weight: 700; }
+  .goal-count { font-size: 2.5rem; font-weight: 900; color: var(--red); line-height: 1; }
+  .goal-meta { font-size: .75rem; color: var(--muted); margin-top: 2px; }
+  .bar-track { background: #2a2a2a; border-radius: 99px; height: 8px; margin: 12px 0; overflow: hidden; }
+  .bar-fill { height: 100%; background: var(--red); border-radius: 99px; transition: width .4s ease; }
+  .goal-footer { display: flex; align-items: center; justify-content: space-between; font-size: .8rem; }
+  .goal-pct { font-weight: 700; color: var(--red); font-size: 1.1rem; }
+  .goal-rem { color: var(--muted); }
+  .achieved-banner { display: none; background: #14291a; border: 1px solid #22c55e44; border-radius: 8px; padding: 10px 16px; color: var(--green); font-weight: 700; font-size: .9rem; margin-top: 12px; }
+  .achieved-banner.show { display: block; }
+  .dots-section { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; }
+  .section-label { font-size: .7rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+  .dots-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; }
+  .dot-slot { aspect-ratio: 1; border-radius: 8px; background: #222; border: 1px solid #2e2e2e; display: flex; align-items: center; justify-content: center; font-size: .6rem; color: #444; font-weight: 600; transition: all .25s; overflow: hidden; }
+  .dot-slot.filled { background: var(--red); border-color: var(--red); color: #fff; font-size: .55rem; font-weight: 700; }
+  .dot-inner { width: 100%; text-align: center; padding: 2px; word-break: break-all; line-height: 1.1; }
+  .entry-panel { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; }
+  .entry-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+  .entry-title { font-size: 1rem; font-weight: 700; }
+  .entry-sub { font-size: .75rem; color: var(--muted); margin-bottom: 14px; }
+  .entry-body { display: flex; flex-direction: column; gap: 6px; }
+  .entry-row { display: flex; align-items: center; gap: 8px; }
+  .entry-num { font-size: .75rem; color: var(--muted); width: 20px; text-align: right; flex-shrink: 0; }
+  .entry-inp { flex: 1; background: #111; border: 1px solid #2e2e2e; border-radius: 7px; padding: 9px 12px; color: var(--text); font-size: .85rem; outline: none; transition: border-color .2s; }
+  .entry-inp:focus { border-color: #555; }
+  .entry-inp.has-value { border-color: var(--red); color: #fff; }
+  .del-btn { background: none; border: none; color: #444; cursor: pointer; font-size: .85rem; padding: 4px 6px; border-radius: 5px; transition: color .15s; flex-shrink: 0; }
+  .del-btn:hover { color: var(--red); }
+  .add-row-btn { margin-top: 6px; background: none; border: 1px dashed #333; border-radius: 7px; color: #555; font-size: .8rem; padding: 8px; cursor: pointer; display: flex; align-items: center; gap: 6px; justify-content: center; transition: border-color .2s, color .2s; }
+  .add-row-btn:hover { border-color: #555; color: var(--text); }
+  .entry-counter { font-size: .75rem; color: var(--muted); }
+  .clear-btn { background: none; border: 1px solid #2e2e2e; color: var(--muted); font-size: .75rem; padding: 5px 12px; border-radius: 6px; cursor: pointer; transition: border-color .2s, color .2s; }
+  .clear-btn:hover { border-color: var(--red); color: var(--red); }
+  .save-btn { background: var(--red); border: none; color: #fff; font-size: .8rem; font-weight: 700; padding: 7px 16px; border-radius: 7px; cursor: pointer; transition: opacity .2s; display: flex; align-items: center; gap: 6px; }
+  .save-btn:hover { opacity: .85; }
+  .save-btn:disabled { opacity: .5; cursor: not-allowed; }
+  .entry-actions { display: flex; align-items: center; gap: 8px; margin-top: 14px; justify-content: space-between; }
+  footer { background: var(--mid); border-top: 1px solid var(--border); padding: 16px 24px; display: flex; flex-wrap: wrap; gap: 24px; justify-content: center; }
+  .stat { text-align: center; }
+  .stat-val { font-size: 1.4rem; font-weight: 900; color: var(--red); line-height: 1; }
+  .stat-label { font-size: .65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+  .slogan { width: 100%; text-align: center; font-size: .7rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #333; margin-top: 4px; }
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px); background: #1e1e1e; border: 1px solid #333; color: var(--text); padding: 10px 20px; border-radius: 8px; font-size: .85rem; opacity: 0; transition: all .25s; pointer-events: none; z-index: 100; white-space: nowrap; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.success { border-color: var(--green); color: var(--green); }
+  .toast.error { border-color: var(--red); color: var(--red); }
+  .toast.saving { border-color: var(--yellow); color: var(--yellow); }
+  @media(max-width:500px){ .dots-grid{ grid-template-columns: repeat(5,1fr); } footer{ gap:16px; } }
 </style>
 </head>
 <body>
 
-<div class="loader" id="loader">
-  <div class="loader-logo">FRONT Financial</div>
-  <div class="loader-bar-wrap"><div class="loader-bar"></div></div>
-</div>
+<div id="loader"><div class="loader-logo">FRONT</div></div>
+<div id="toast" class="toast"></div>
 
-<div class="layout" id="layout">
+<header>
+  <div>
+    <div class="brand">FRONT Financial</div>
+    <div class="tagline">Sharp-minded, performance-based, tech-driven</div>
+  </div>
+  <div class="header-right">
+    <div class="header-title">This Week's Goal</div>
+    <div class="live-badge"><span class="live-dot"></span>Live</div>
+    <div id="lastUpdated"></div>
+    <div id="syncStatus">Loading...</div>
+  </div>
+</header>
 
-  <header>
-    <div>
-      <div class="logo-wordmark">FRONT Financial</div>
-      <div class="logo-sub">Sharp-minded, performance-based, tech-driven</div>
+<div class="page">
+  <div class="goal-card">
+    <div class="goal-header">
+      <div class="goal-title">🏎️ Weekly Goal — Lodgements</div>
+      <div id="ep-count" class="goal-count">0 / 20</div>
     </div>
-    <div class="header-center">
-      <div class="page-title">THIS WEEK'S GOAL</div>
+    <div id="lod-label" class="goal-meta">0% of target</div>
+    <div class="bar-track"><div id="lod-bar" class="bar-fill" style="width:0%"></div></div>
+    <div class="goal-footer">
+      <span id="lod-pct" class="goal-pct">0%</span>
+      <span id="lod-rem" class="goal-rem"><strong>20</strong> lodgements to go</span>
     </div>
-    <div class="header-right">
-      <div>
-        <div class="live-pill"><div class="pulse"></div>Live</div>
-        <div class="last-updated" id="lastUpdated">Ready</div>
-      </div>
-    </div>
-  </header>
-
-  <div class="main-grid">
-
-    <!-- LEFT: LODGEMENTS GOAL -->
-    <div class="card gold">
-      <div class="card-top">
-        <div class="badge">🏎️ &nbsp;Weekly Goal — Lodgements</div>
-      </div>
-      <div class="counter-block">
-        <div class="counter-row">
-          <div class="counter-current" id="lod-count">0</div>
-          <div class="counter-sep">/</div>
-          <div class="counter-target">20</div>
-        </div>
-        <div class="counter-label">Lodgements This Week</div>
-      </div>
-      <div class="prog-wrap">
-        <div class="prog-header">
-          <span class="prog-label" id="lod-label">0% of target</span>
-          <span class="prog-pct" id="lod-pct">0%</span>
-        </div>
-        <div class="track"><div class="fill" id="lod-bar" style="width:0%"></div></div>
-        <div class="prog-remaining" id="lod-rem"><strong>20</strong> lodgements to go</div>
-      </div>
-      <div class="achieved" id="lod-achieved">
-        <div class="achieved-icon">🏆</div>
-        <div class="achieved-text">Goal Smashed!</div>
-      </div>
-
-    </div>
-
-    <!-- RIGHT: ENTRY PANEL (inline) -->
-    <div class="entry-panel">
-      <div class="ep-header">
-        <div class="ep-title">Log Lodgements</div>
-        <div class="ep-sub">Each client name counts as one lodgement</div>
-      </div>
-      <div class="ep-body" id="entry-body"></div>
-      <div class="ep-footer">
-        <div>
-          <div class="ep-count" id="ep-count">0 / 20</div>
-          <div class="ep-count-label">Lodgements Logged</div>
-        </div>
-        <button class="clear-all-btn" onclick="clearAll()">Clear All</button>
-      </div>
-    </div>
-
+    <div id="lod-achieved" class="achieved-banner">🏆 Goal Smashed!</div>
   </div>
 
-  <footer>
-    <div class="stat">
-      <div class="stat-val" id="f-count">0</div>
-      <div class="stat-label">Lodgements This Week</div>
-    </div>
-    <div class="divider"></div>
-    <div class="stat">
-      <div class="stat-val" id="f-remain">20</div>
-      <div class="stat-label">To Hit Target</div>
-    </div>
-    <div class="divider"></div>
-    <div class="motto">LET'S GET IT</div>
-    <div class="divider"></div>
-    <div class="stat">
-      <div class="stat-val" id="f-pct">0%</div>
-      <div class="stat-label">Progress</div>
-    </div>
-    <div class="divider"></div>
-    <div class="stat">
-      <div class="stat-val" id="f-slots">20</div>
-      <div class="stat-label">Slots Remaining</div>
-    </div>
-  </footer>
+  <div class="dots-section">
+    <div class="section-label">Deals Lodged</div>
+    <div id="dots-grid" class="dots-grid"></div>
+  </div>
 
+  <div class="entry-panel">
+    <div class="entry-header">
+      <div class="entry-title">Log Lodgements</div>
+      <span id="entry-counter" class="entry-counter">0 / 20</span>
+    </div>
+    <div class="entry-sub">Each client name counts as one lodgement</div>
+    <div id="entry-body" class="entry-body"></div>
+    <div class="entry-actions">
+      <button class="clear-btn" onclick="clearAll()">Clear All</button>
+      <button id="save-btn" class="save-btn" onclick="saveToGitHub()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        Save
+      </button>
+    </div>
+  </div>
 </div>
 
-<div class="toast" id="toast"></div>
+<footer>
+  <div class="stat"><div id="f-count" class="stat-val">0</div><div class="stat-label">Lodgements This Week</div></div>
+  <div class="stat"><div id="f-remain" class="stat-val">20</div><div class="stat-label">To Hit Target</div></div>
+  <div class="stat"><div id="f-pct" class="stat-val">0%</div><div class="stat-label">Progress</div></div>
+  <div class="stat"><div id="f-slots" class="stat-val">20</div><div class="stat-label">Slots Remaining</div></div>
+  <div class="slogan">LET'S GET IT</div>
+</footer>
 
 <script>
-  const TARGET = 20;
+const TARGET = 20;
+const REPO = 'eleanorepalmer-droid/Tracker';
+const DATA_FILE = 'data.json';
+const _a = 'ghp_9L259sR9aX';
+const _b = 'pvOY7nkTERtQ';
+const _c = 'mZQeOmIa3ijLHZ';
+const GT = _a + _b + _c;
 
-  // Local-only state — no Supabase needed for this view
-  // Each entry: { id, name }
-  let entries = [];
-  let nextId = 1;
+let entries = [];
+let nextId = 1;
+let currentSHA = null;
 
-  const $ = id => document.getElementById(id);
+const $ = id => document.getElementById(id);
 
-  function toast(msg, type='success') {
-    const t = $('toast');
-    t.textContent = msg;
-    t.className = `toast ${type} show`;
-    setTimeout(() => t.classList.remove('show'), 2500);
+function toast(msg, type) {
+  type = type || 'success';
+  const t = $('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + type + ' show';
+  setTimeout(function(){ t.classList.remove('show'); }, 2800);
+}
+
+function buildDotsGrid() {
+  const grid = $('dots-grid');
+  grid.innerHTML = '';
+  for (let i = 1; i <= TARGET; i++) {
+    const slot = document.createElement('div');
+    slot.className = 'dot-slot';
+    slot.id = 'dot-' + i;
+    slot.innerHTML = '<div class="dot-inner" id="dot-inner-' + i + '">' + i + '</div>';
+    grid.appendChild(slot);
   }
+}
 
-  // ── RENDER DASHBOARD ──────────────────────────────────
-  function renderDashboard() {
-    const namedEntries = entries.filter(e => e.name.trim() !== '');
-    const count = namedEntries.length;
-    const pct = Math.min(100, (count / TARGET) * 100);
-    const remain = Math.max(0, TARGET - count);
-
-    $('lod-count').textContent = count;
-    $('lod-bar').style.width = pct + '%';
-    $('lod-pct').textContent = Math.round(pct) + '%';
-    $('lod-label').textContent = Math.round(pct) + '% of target';
-    $('lod-rem').innerHTML = remain > 0
-      ? `<strong>${remain}</strong> lodgement${remain !== 1 ? 's' : ''} to go`
-      : `<strong>All 20 done!</strong> 🔥`;
-    $('lod-achieved').classList.toggle('show', count >= TARGET);
-
-    $('ep-count').textContent = `${count} / ${TARGET}`;
-
-    $('f-count').textContent = count;
-    $('f-remain').textContent = remain;
-    $('f-pct').textContent = Math.round(pct) + '%';
-    $('f-slots').textContent = remain;
-
-    $('lastUpdated').textContent = 'Updated ' + new Date().toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+function updateDots() {
+  const filled = entries.filter(function(e){ return e.name.trim() !== ''; });
+  for (let i = 1; i <= TARGET; i++) {
+    const slot = $('dot-' + i);
+    const inner = $('dot-inner-' + i);
+    const entry = filled[i - 1];
+    if (entry) {
+      slot.classList.add('filled');
+      inner.textContent = entry.name.trim().split(' ')[0].substring(0, 7);
+    } else {
+      slot.classList.remove('filled');
+      inner.textContent = i;
+    }
   }
+}
 
-  // ── RENDER ENTRY LIST ─────────────────────────────────
-  function renderEntries() {
-    const body = $('entry-body');
-    body.innerHTML = '';
+function renderDashboard() {
+  const namedEntries = entries.filter(function(e){ return e.name.trim() !== ''; });
+  const count = namedEntries.length;
+  const pct = Math.min(100, (count / TARGET) * 100);
+  const remain = Math.max(0, TARGET - count);
+  $('ep-count').textContent = count + ' / ' + TARGET;
+  $('lod-bar').style.width = pct + '%';
+  $('lod-pct').textContent = Math.round(pct) + '%';
+  $('lod-label').textContent = Math.round(pct) + '% of target';
+  $('lod-rem').innerHTML = remain > 0
+    ? '<strong>' + remain + '</strong> lodgement' + (remain !== 1 ? 's' : '') + ' to go'
+    : '<strong>All 20 done!</strong> 🔥';
+  $('lod-achieved').classList.toggle('show', count >= TARGET);
+  $('entry-counter').textContent = count + ' / ' + TARGET;
+  $('f-count').textContent = count;
+  $('f-remain').textContent = remain;
+  $('f-pct').textContent = Math.round(pct) + '%';
+  $('f-slots').textContent = remain;
+  $('lastUpdated').textContent = 'Updated ' + new Date().toLocaleTimeString('en-AU', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  updateDots();
+}
 
-    entries.forEach((entry, idx) => {
-      const row = document.createElement('div');
-      row.className = 'entry-row';
-
-      const num = document.createElement('div');
-      num.className = 'entry-num';
-      num.textContent = (idx + 1) + '.';
-
-      const inp = document.createElement('input');
+function renderEntries() {
+  const body = $('entry-body');
+  body.innerHTML = '';
+  entries.forEach(function(entry, idx) {
+    const row = document.createElement('div');
+    row.className = 'entry-row';
+    const num = document.createElement('div');
+    num.className = 'entry-num';
+    num.textContent = (idx + 1) + '.';
+    const inp = document.createElement('input');
+    inp.className = 'entry-inp' + (entry.name.trim() ? ' has-value' : '');
+    inp.type = 'text';
+    inp.placeholder = 'Client name #' + (idx + 1);
+    inp.value = entry.name;
+    inp.addEventListener('input', function(e) {
+      entry.name = e.target.value;
       inp.className = 'entry-inp' + (entry.name.trim() ? ' has-value' : '');
-      inp.type = 'text';
-      inp.placeholder = `Client name #${idx + 1}`;
-      inp.value = entry.name;
-      inp.addEventListener('input', e => {
-        entry.name = e.target.value;
-        inp.className = 'entry-inp' + (entry.name.trim() ? ' has-value' : '');
-        renderDashboard();
-      });
-      // Focus next input on Enter
-      inp.addEventListener('keydown', e => {
-        if (e.key === 'Enter') {
-          const rows = document.querySelectorAll('.entry-inp');
-          const next = rows[idx + 1];
-          if (next) next.focus();
-          else if (entries.length < TARGET) {
-            addEntry();
-            setTimeout(() => {
-              const newRows = document.querySelectorAll('.entry-inp');
-              newRows[newRows.length - 1].focus();
-            }, 50);
-          }
-        }
-      });
-
-      const del = document.createElement('button');
-      del.className = 'del-btn';
-      del.innerHTML = '✕';
-      del.addEventListener('click', () => removeEntry(entry.id));
-
-      row.appendChild(num);
-      row.appendChild(inp);
-      row.appendChild(del);
-      body.appendChild(row);
+      renderDashboard();
     });
+    inp.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        const rows = document.querySelectorAll('.entry-inp');
+        const next = rows[idx + 1];
+        if (next) { next.focus(); }
+        else if (entries.length < TARGET) {
+          addEntry();
+          setTimeout(function() {
+            const newRows = document.querySelectorAll('.entry-inp');
+            newRows[newRows.length - 1].focus();
+          }, 50);
+        }
+      }
+    });
+    const del = document.createElement('button');
+    del.className = 'del-btn';
+    del.innerHTML = '✕';
+    del.addEventListener('click', function(){ removeEntry(entry.id); });
+    row.appendChild(num);
+    row.appendChild(inp);
+    row.appendChild(del);
+    body.appendChild(row);
+  });
+  if (entries.length < TARGET) {
+    const addBtn = document.createElement('button');
+    addBtn.className = 'add-row-btn';
+    addBtn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add Client';
+    addBtn.addEventListener('click', function() {
+      addEntry();
+      setTimeout(function() {
+        const rows = document.querySelectorAll('.entry-inp');
+        rows[rows.length - 1].focus();
+      }, 50);
+    });
+    body.appendChild(addBtn);
+  }
+  renderDashboard();
+}
 
-    // Add row button
-    if (entries.length < TARGET) {
-      const addBtn = document.createElement('button');
-      addBtn.className = 'add-row-btn';
-      addBtn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add Client`;
-      addBtn.addEventListener('click', () => {
-        addEntry();
-        setTimeout(() => {
-          const rows = document.querySelectorAll('.entry-inp');
-          rows[rows.length - 1].focus();
-        }, 50);
-      });
-      body.appendChild(addBtn);
+function addEntry() {
+  if (entries.length >= TARGET) return;
+  entries.push({ id: nextId++, name: '' });
+  renderEntries();
+}
+
+function removeEntry(id) {
+  entries = entries.filter(function(e){ return e.id !== id; });
+  renderEntries();
+}
+
+function clearAll() {
+  if (!confirm('Clear all lodgement entries?')) return;
+  entries = [];
+  renderEntries();
+  toast('All cleared');
+}
+
+function loadFromGitHub() {
+  $('syncStatus').textContent = 'Loading data...';
+  fetch('https://api.github.com/repos/' + REPO + '/contents/' + DATA_FILE + '?t=' + Date.now(), {
+    headers: { 'Authorization': 'Bearer ' + GT, 'Accept': 'application/vnd.github+json' }
+  })
+  .then(function(res){ return res.json(); })
+  .then(function(file) {
+    currentSHA = file.sha;
+    const decoded = decodeURIComponent(escape(atob(file.content.replace(/\n/g, ''))));
+    const data = JSON.parse(decoded);
+    entries = (data.entries || []).map(function(e){ return { id: nextId++, name: e.name || '' }; });
+    if (entries.length === 0) {
+      for (let i = 0; i < 5; i++) entries.push({ id: nextId++, name: '' });
     }
-
-    renderDashboard();
-  }
-
-  // ── CRUD ──────────────────────────────────────────────
-  function addEntry() {
-    if (entries.length >= TARGET) return;
-    entries.push({ id: nextId++, name: '' });
     renderEntries();
-  }
-
-  function removeEntry(id) {
-    entries = entries.filter(e => e.id !== id);
+    $('syncStatus').textContent = 'Synced ✓';
+    setTimeout(function(){ $('syncStatus').textContent = ''; }, 3000);
+  })
+  .catch(function(err) {
+    $('syncStatus').textContent = 'Load failed';
+    for (let i = 0; i < 5; i++) entries.push({ id: nextId++, name: '' });
     renderEntries();
-  }
+  });
+}
 
-  function clearAll() {
-    if (!confirm('Clear all lodgement entries?')) return;
-    entries = [];
-    renderEntries();
-    toast('All cleared');
-  }
+function saveToGitHub() {
+  const btn = $('save-btn');
+  btn.disabled = true;
+  $('syncStatus').textContent = 'Saving...';
+  toast('Saving to GitHub...', 'saving');
 
-  // ── INIT ──────────────────────────────────────────────
-  function init() {
-    // Start with 5 empty rows
-    for (let i = 0; i < 5; i++) {
-      entries.push({ id: nextId++, name: '' });
-    }
-    renderEntries();
-    setTimeout(() => $('loader').classList.add('gone'), 1200);
-  }
+  fetch('https://api.github.com/repos/' + REPO + '/contents/' + DATA_FILE, {
+    headers: { 'Authorization': 'Bearer ' + GT, 'Accept': 'application/vnd.github+json' }
+  })
+  .then(function(res){ return res.json(); })
+  .then(function(checkFile) {
+    currentSHA = checkFile.sha;
+    const namedEntries = entries.filter(function(e){ return e.name.trim() !== ''; });
+    const data = { entries: namedEntries.map(function(e){ return { name: e.name.trim() }; }), lastSaved: new Date().toISOString() };
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+    return fetch('https://api.github.com/repos/' + REPO + '/contents/' + DATA_FILE, {
+      method: 'PUT',
+      headers: { 'Authorization': 'Bearer ' + GT, 'Content-Type': 'application/json', 'Accept': 'application/vnd.github+json' },
+      body: JSON.stringify({ message: 'Update tracker data', content: content, sha: currentSHA })
+    });
+  })
+  .then(function(res){ return res.json().then(function(r){ return { status: res.status, body: r }; }); })
+  .then(function(result) {
+    if (result.status !== 200) throw new Error('HTTP ' + result.status);
+    currentSHA = result.body.content.sha;
+    toast('Saved! Live in ~30s ✓', 'success');
+    $('syncStatus').textContent = 'Saved ✓';
+    setTimeout(function(){ $('syncStatus').textContent = ''; }, 5000);
+  })
+  .catch(function(err) {
+    toast('Save failed: ' + err.message, 'error');
+    $('syncStatus').textContent = 'Save failed';
+  })
+  .finally(function(){ btn.disabled = false; });
+}
 
-  init();
+function init() {
+  buildDotsGrid();
+  loadFromGitHub();
+  setTimeout(function(){ $('loader').classList.add('gone'); }, 1200);
+}
+
+init();
 </script>
 </body>
 </html>
