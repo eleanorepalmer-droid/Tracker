@@ -53,20 +53,48 @@
 
   .card-title { font-family:'Bebas Neue',sans-serif; font-size:clamp(1.6rem,2.8vw,2.8rem); letter-spacing:0.06em; line-height:1; }
 
-  .amount-row { display:flex; align-items:baseline; gap:0.8vw; }
-  .amount-big { font-family:'Bebas Neue',sans-serif; font-size:clamp(3rem,7vw,7rem); line-height:0.9; transition:all 0.5s; }
-  .card.gold .amount-big{color:var(--gold)} .card.teal .amount-big{color:var(--teal)}
-  .amount-of { font-family:'Bebas Neue',sans-serif; font-size:clamp(1.1rem,2vw,2rem); color:var(--muted); }
+  /* BIG COUNTER */
+  .counter-block { display:flex; flex-direction:column; align-items:flex-start; gap:0.3vw; position:relative; }
+  .counter-row { display:flex; align-items:center; gap:0.5vw; line-height:1; }
+  .counter-current {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:clamp(6rem,16vw,18rem);
+    line-height:0.82;
+    background:linear-gradient(135deg,#b8900f 0%,var(--gold) 40%,#fffbe0 60%,var(--gold) 80%,#b8900f 100%);
+    background-size:200% 200%;
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    animation:goldShift 4s ease-in-out infinite;
+    transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    filter:drop-shadow(0 0 28px rgba(245,200,66,0.3));
+  }
+  @keyframes goldShift { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
+  .counter-sep {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:clamp(2.5rem,6vw,7rem);
+    color:rgba(255,255,255,0.1);
+    line-height:1;
+    align-self:center;
+    margin:0 0.2vw;
+  }
+  .counter-target {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:clamp(2.5rem,6vw,7rem);
+    color:rgba(255,255,255,0.15);
+    line-height:1;
+    align-self:center;
+  }
+  .counter-label { font-size:clamp(0.6rem,0.85vw,0.72rem); color:var(--muted); font-weight:600; letter-spacing:0.2em; text-transform:uppercase; margin-top:0.2vw; }
 
-  .prog-wrap { display:flex; flex-direction:column; gap:0.6vw; }
+  /* PROGRESS BAR */
+  .prog-wrap { display:flex; flex-direction:column; gap:0.7vw; }
   .prog-header { display:flex; justify-content:space-between; align-items:center; }
   .prog-label { font-size:clamp(0.6rem,0.85vw,0.72rem); color:var(--muted); font-weight:500; }
   .prog-pct { font-family:'Bebas Neue',sans-serif; font-size:clamp(1.1rem,2vw,2rem); }
   .card.gold .prog-pct{color:var(--gold)} .card.teal .prog-pct{color:var(--teal)}
-  .track { height:clamp(14px,1.8vw,22px); background:rgba(255,255,255,0.05); border-radius:100px; overflow:hidden; }
+  .track { height:clamp(10px,1.4vw,18px); background:rgba(255,255,255,0.04); border-radius:100px; overflow:hidden; border:1px solid rgba(255,255,255,0.06); }
   .fill { height:100%; border-radius:100px; transition:width 1s cubic-bezier(0.4,0,0.2,1); position:relative; min-width:0; max-width:100%; }
-  .card.gold .fill { background:linear-gradient(90deg,#b8900f,var(--gold),#ffe57c); box-shadow:0 0 20px rgba(245,200,66,0.35); }
-  .fill::after { content:''; position:absolute; inset:0; background:linear-gradient(90deg,transparent,rgba(255,255,255,0.28),transparent); background-size:200% 100%; animation:shine 2.5s ease-in-out infinite; }
+  .card.gold .fill { background:linear-gradient(90deg,#b8900f,var(--gold),#ffe57c); box-shadow:0 0 24px rgba(245,200,66,0.45); }
+  .fill::after { content:''; position:absolute; inset:0; background:linear-gradient(90deg,transparent,rgba(255,255,255,0.35),transparent); background-size:200% 100%; animation:shine 2.5s ease-in-out infinite; }
   @keyframes shine { 0%{background-position:-100% 0} 100%{background-position:300% 0} }
 
   .prog-remaining { font-size:clamp(0.6rem,0.85vw,0.72rem); color:var(--muted); }
@@ -76,14 +104,6 @@
   .achieved.show { display:flex; }
   .achieved-icon { font-size:clamp(1.2rem,2vw,2rem); }
   .achieved-text { font-family:'Bebas Neue',sans-serif; font-size:clamp(1rem,1.8vw,1.8rem); color:var(--green); letter-spacing:0.1em; }
-
-  /* DOTS GRID for lodgements */
-  .dots-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:0.6vw; margin-top:0.4vw; }
-  .dot-slot { aspect-ratio:1; border-radius:50%; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07); display:flex; align-items:center; justify-content:center; font-size:clamp(0.4rem,0.6vw,0.52rem); color:var(--muted); font-weight:600; letter-spacing:0.05em; transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1); overflow:hidden; position:relative; }
-  .dot-slot.filled { background:rgba(245,200,66,0.12); border-color:rgba(245,200,66,0.4); }
-  .dot-slot.filled .dot-inner { color:var(--gold); transform:scale(1); opacity:1; }
-  .dot-inner { font-size:clamp(0.38rem,0.55vw,0.48rem); text-align:center; padding:2px; line-height:1.2; transform:scale(0.6); opacity:0; transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1); word-break:break-all; }
-  .dot-slot.filled::before { content:''; position:absolute; inset:0; border-radius:50%; background:radial-gradient(circle,rgba(245,200,66,0.15),transparent 70%); }
 
   /* RIGHT — ENTRY PANEL (inline) */
   .entry-panel { background:var(--card); border-radius:24px; border:1px solid rgba(78,205,196,0.15); display:flex; flex-direction:column; overflow:hidden; opacity:0; transform:translateY(18px); animation:rise 0.7s cubic-bezier(0.22,1,0.36,1) 0.2s forwards; position:relative; }
@@ -172,14 +192,16 @@
 
     <!-- LEFT: LODGEMENTS GOAL -->
     <div class="card gold">
-      <div class="wm">20</div>
       <div class="card-top">
         <div class="badge">🏎️ &nbsp;Weekly Goal — Lodgements</div>
       </div>
-      <div class="card-title">Deals Lodged</div>
-      <div class="amount-row">
-        <div class="amount-big" id="lod-count">0</div>
-        <div class="amount-of">/ 20</div>
+      <div class="counter-block">
+        <div class="counter-row">
+          <div class="counter-current" id="lod-count">0</div>
+          <div class="counter-sep">/</div>
+          <div class="counter-target">20</div>
+        </div>
+        <div class="counter-label">Lodgements This Week</div>
       </div>
       <div class="prog-wrap">
         <div class="prog-header">
@@ -193,8 +215,7 @@
         <div class="achieved-icon">🏆</div>
         <div class="achieved-text">Goal Smashed!</div>
       </div>
-      <!-- DOTS GRID: 20 slots in 5×4 grid -->
-      <div class="dots-grid" id="dots-grid"></div>
+
     </div>
 
     <!-- RIGHT: ENTRY PANEL (inline) -->
@@ -260,37 +281,6 @@
     setTimeout(() => t.classList.remove('show'), 2500);
   }
 
-  // ── DOTS GRID ─────────────────────────────────────────
-  function buildDotsGrid() {
-    const grid = $('dots-grid');
-    grid.innerHTML = '';
-    for (let i = 1; i <= TARGET; i++) {
-      const slot = document.createElement('div');
-      slot.className = 'dot-slot';
-      slot.id = `dot-${i}`;
-      slot.innerHTML = `<div class="dot-inner" id="dot-inner-${i}">${i}</div>`;
-      grid.appendChild(slot);
-    }
-  }
-
-  function updateDots() {
-    const filled = entries.filter(e => e.name.trim() !== '');
-    for (let i = 1; i <= TARGET; i++) {
-      const slot = $(`dot-${i}`);
-      const inner = $(`dot-inner-${i}`);
-      const entry = filled[i - 1];
-      if (entry) {
-        slot.classList.add('filled');
-        // Show first ~6 chars of name
-        const label = entry.name.trim().split(' ')[0].substring(0, 7);
-        inner.textContent = label;
-      } else {
-        slot.classList.remove('filled');
-        inner.textContent = i;
-      }
-    }
-  }
-
   // ── RENDER DASHBOARD ──────────────────────────────────
   function renderDashboard() {
     const namedEntries = entries.filter(e => e.name.trim() !== '');
@@ -315,8 +305,6 @@
     $('f-slots').textContent = remain;
 
     $('lastUpdated').textContent = 'Updated ' + new Date().toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-
-    updateDots();
   }
 
   // ── RENDER ENTRY LIST ─────────────────────────────────
@@ -408,7 +396,6 @@
 
   // ── INIT ──────────────────────────────────────────────
   function init() {
-    buildDotsGrid();
     // Start with 5 empty rows
     for (let i = 0; i < 5; i++) {
       entries.push({ id: nextId++, name: '' });
