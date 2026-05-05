@@ -209,7 +209,7 @@ function renderDashboard() {
   $('lod-label').textContent = Math.round(pct) + '% of target';
   $('lod-rem').innerHTML = remain > 0
     ? '<strong>' + remain + '</strong> lodgement' + (remain !== 1 ? 's' : '') + ' to go'
-    : '<strong>All 20 done!</strong> 🔥';
+    : '<strong>All 10 done!</strong> 🔥';
   $('lod-achieved').classList.toggle('show', count >= TARGET);
   $('entry-counter').textContent = count + ' / ' + TARGET;
   $('f-count').textContent = count;
