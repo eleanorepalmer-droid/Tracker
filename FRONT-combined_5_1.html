@@ -105,29 +105,29 @@
 <div class="page">
   <div class="goal-card">
     <div class="goal-header">
-      <div class="goal-title">🏎️ Weekly Goal — Lodgements</div>
+      <div class="goal-title">🏎️ Weekly Goal — Unconditionally Approved</div>
       <div id="ep-count" class="goal-count">0 / 20</div>
     </div>
     <div id="lod-label" class="goal-meta">0% of target</div>
     <div class="bar-track"><div id="lod-bar" class="bar-fill" style="width:0%"></div></div>
     <div class="goal-footer">
       <span id="lod-pct" class="goal-pct">0%</span>
-      <span id="lod-rem" class="goal-rem"><strong>20</strong> lodgements to go</span>
+      <span id="lod-rem" class="goal-rem"><strong>20</strong> unconditionally approved to go</span>
     </div>
     <div id="lod-achieved" class="achieved-banner">🏆 Goal Smashed!</div>
   </div>
 
   <div class="dots-section">
-    <div class="section-label">Deals Lodged</div>
+    <div class="section-label">Deals Unconditionally Approved</div>
     <div id="dots-grid" class="dots-grid"></div>
   </div>
 
   <div class="entry-panel">
     <div class="entry-header">
-      <div class="entry-title">Log Lodgements</div>
+      <div class="entry-title">Log Unconditionally Approved</div>
       <span id="entry-counter" class="entry-counter">0 / 20</span>
     </div>
-    <div class="entry-sub">Each client name counts as one lodgement</div>
+    <div class="entry-sub">Each client name counts as one unconditionally approved</div>
     <div id="entry-body" class="entry-body"></div>
     <div class="entry-actions">
       <button class="clear-btn" onclick="clearAll()">Clear All</button>
@@ -140,7 +140,7 @@
 </div>
 
 <footer>
-  <div class="stat"><div id="f-count" class="stat-val">0</div><div class="stat-label">Lodgements This Week</div></div>
+  <div class="stat"><div id="f-count" class="stat-val">0</div><div class="stat-label">Unconditionally Approved This Week</div></div>
   <div class="stat"><div id="f-remain" class="stat-val">20</div><div class="stat-label">To Hit Target</div></div>
   <div class="stat"><div id="f-pct" class="stat-val">0%</div><div class="stat-label">Progress</div></div>
   <div class="stat"><div id="f-slots" class="stat-val">20</div><div class="stat-label">Slots Remaining</div></div>
@@ -208,7 +208,7 @@ function renderDashboard() {
   $('lod-pct').textContent = Math.round(pct) + '%';
   $('lod-label').textContent = Math.round(pct) + '% of target';
   $('lod-rem').innerHTML = remain > 0
-    ? '<strong>' + remain + '</strong> lodgement' + (remain !== 1 ? 's' : '') + ' to go'
+    ? '<strong>' + remain + '</strong> unconditionally approved' + (remain !== 1 ? 's' : '') + ' to go'
     : '<strong>All 10 done!</strong> 🔥';
   $('lod-achieved').classList.toggle('show', count >= TARGET);
   $('entry-counter').textContent = count + ' / ' + TARGET;
@@ -290,7 +290,7 @@ function removeEntry(id) {
 }
 
 function clearAll() {
-  if (!confirm('Clear all lodgement entries?')) return;
+  if (!confirm('Clear all unconditionally approved entries?')) return;
   entries = [];
   renderEntries();
   toast('All cleared');
